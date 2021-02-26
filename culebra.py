@@ -75,7 +75,7 @@ def culebron():
 
     #bucle principal
     while 1:
-        print("\033[H\033[J") 
+        print("\033[H\033[J") #limpiamos la pantalla
         mostrarPantalla(PANTALLA)
         print()
         avanzar(4)

@@ -3,15 +3,17 @@ from time import sleep
 # variables globales (por mientras, cuando esté más completo el programa
 # pienso quitarlas para solo usar variables locales)
 
+# TODO: Hacer que la serpiente aparezca en un lugar aleatorio
 ancho = 20
 altura = 10
+largo_culebra = 3
 
 cuerpo_culebra = "[=]"
 cabeza_culebra = "[>]"
 espacio_vacio = "[ ]"
 
-posicion_cabeza_x = 3
-posicion_cabeza_y = 0
+posicion_cabeza_x = 0
+posicion_cabeza_y = 3
     
 posicion_cola_x = 0
 posicion_cola_y = 0
@@ -41,20 +43,69 @@ def mostrarPantalla(PANTALLA):
 
 # Llena las posiciones que debería ocupar la serpiente en la matriz
 # que representa la pantalla, NO muestra la pantalla, solo cambia los
-# carácteres para representar la serpiente
-# TODO:Hacer que la serpiente aparezca en un lugar aleatorio
+# carácteres dentro de esta para representar la serpiente
 def dibujarCulebra(largo):
     global PANTALLA
+    inicializarPantalla(ancho, altura) #reseteamos toda la pantalla
 
+    #si la cabeza y la cola de la serpiente están en la misma columna
     if posicion_cabeza_y == posicion_cola_y:
-        for i in range(largo-1):
-            PANTALLA[posicion_cola_y][posicion_cola_x + i] = cuerpo_culebra
-        PANTALLA[posicion_cabeza_y][posicion_cabeza_x] = cabeza_culebra
+        #si la cabeza está antes que la cola significa que vamos
+        #de derecha a izquierda, por tanto retrocedemos
 
+        if posicion_cabeza_x < posicion_cola_x:
+            for i in range(largo-1):
+                PANTALLA[posicion_cola_y][posicion_cola_x - i] = cuerpo_culebra
+            PANTALLA[posicion_cabeza_y][posicion_cabeza_x] = cabeza_culebra
+
+        #si la cabeza está después que la cola significa que vamos
+        #de izquierda a derecha, por tanto avanzamos
+        elif posicion_cabeza_x > posicion_cola_x:
+            for i in range(largo-1):
+                PANTALLA[posicion_cola_y][posicion_cola_x + i] = cuerpo_culebra
+            PANTALLA[posicion_cabeza_y][posicion_cabeza_x] = cabeza_culebra
+
+    #si la cabeza y la cola de la serpiente están en la misma fila
     elif posicion_cabeza_x == posicion_cola_x:
-        for i in range(largo-1):
-            PANTALLA[posicion_cola_y+i][posicion_cola_x] = cuerpo_culebra
-        PANTALLA[posicion_cabeza_y][posicion_cabeza_x] = cabeza_culebra
+        #si la cabeza está arriba de la cola significa que vamos
+        #de abajo hacia arriba, por tanto subimos
+
+        if posicion_cabeza_y < posicion_cola_y:
+            for i in range(largo-1):
+                PANTALLA[posicion_cola_y-i][posicion_cola_x] = cuerpo_culebra
+            PANTALLA[posicion_cabeza_y][posicion_cabeza_x] = cabeza_culebra
+
+        #si la cabeza está abajo de la cola significa que vamos
+        #de arriba hacia abajo, por tanto bajamos
+        elif posicion_cabeza_y > posicion_cola_y:
+            for i in range(largo-1):
+                PANTALLA[posicion_cola_y+i][posicion_cola_x] = cuerpo_culebra
+            PANTALLA[posicion_cabeza_y][posicion_cabeza_x] = cabeza_culebra
+
+def derecha():
+    global posicion_cabeza_x
+    global posicion_cola_x
+    posicion_cabeza_x+=1
+    posicion_cola_x+=1
+    
+
+def izquierda():
+    global posicion_cabeza_x
+    global posicion_cola_x
+    posicion_cabeza_x-=1
+    posicion_cola_x-=1
+
+def abajo():
+    global posicion_cabeza_y
+    global posicion_cola_y
+    posicion_cabeza_y+=1
+    posicion_cola_y+=1
+
+def arriba():
+    global posicion_cabeza_y
+    global posicion_cola_y
+    posicion_cabeza_y-=1
+    posicion_cola_y-=1
 
 def avanzar(largo):
 
@@ -65,10 +116,21 @@ def avanzar(largo):
     global posicion_cola_y
 
     global PANTALLA
-    posicion_cabeza_x+=1
-    posicion_cola_x+=1
-    dibujarCulebra(4)
+    
+    #aquí vemos hacia dónde avanzar:
 
+    if posicion_cabeza_y == posicion_cola_y:
+        if posicion_cabeza_x < posicion_cola_x:
+            izquierda()
+        elif posicion_cabeza_x > posicion_cola_x:
+            derecha()
+    
+    elif posicion_cabeza_x == posicion_cola_x:
+        if posicion_cabeza_y < posicion_cola_y:
+            arriba()
+        elif posicion_cabeza_y > posicion_cola_y:
+            abajo()
+    dibujarCulebra(largo_culebra)
 
 def culebron():
     inicializarPantalla(ancho, altura)
@@ -78,7 +140,7 @@ def culebron():
         print("\033[H\033[J") #limpiamos la pantalla
         mostrarPantalla(PANTALLA)
         print()
-        avanzar(4)
+        avanzar(largo_culebra)
         sleep(0.250)
     
 culebron()
